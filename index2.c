@@ -46,7 +46,7 @@ int main(){
 	for(i=0; i<row; i++){
 		printf(":");
 		for(j=0;j<col;j++){
-			printf(" %d :",a[i][j]);
+			printf("  %d  :",a[i][j]);
 		}
 		row_line();
 	}

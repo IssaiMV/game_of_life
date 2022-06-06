@@ -97,27 +97,46 @@ void play (int board[][BOARD_HEIGHT]) {
 	}
 }
 
+int row_line(){
+	printf("\n");
+	for(int i=0; i<BOARD_WIDTH; i++){printf(" -----");}
+	printf("\n");
+}
+
 /* print the life board */
+
+
 
 void print (int board[][BOARD_HEIGHT]) {
 	int	i, j;
+	
+	row_line();
+	for(j=0; j<BOARD_HEIGHT; j++){
+		printf(":");
+		for(i=0;i<BOARD_WIDTH;i++){
+			printf("  %c  :",board[i][j] ? '1' : '0');
+		}
+		row_line();
+	}
 
 	/* for each row */
-
+	/*
 	for (j=0; j<BOARD_HEIGHT; j++) {
 
-		/* print each column position... */
+		
 
 		for (i=0; i<BOARD_WIDTH; i++) {
 			//printf ("%c", board[i][j] ? 'x' : ' ');
 			printf ("%c", board[i][j] ? 'x' : 'o');
 		}
 
-		/* followed by a carriage return */
+		
 
 		printf ("\n");
 	}
+	*/
 }
+
 
 /* read a file into the life board */
 
@@ -141,6 +160,10 @@ void read_file (int board[][BOARD_HEIGHT], char *name) {
 	}
 	fclose (f);
 }
+
+//creates row boundary
+
+
 
 /* main program */
 
