@@ -175,7 +175,7 @@ int main (int argc, char *argv[]) {
 	read_file (board, argv[1]);
 
 	/* play game of life 100 times */
-
+	puts ("\033[H\033[J");
 	for (i=0; i<100; i++) {
 		print (board);
 		play (board);
