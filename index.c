@@ -13,19 +13,19 @@
  *
  */
 #include <stdio.h>
-
+#include <unistd.h>
 /* dimensions of the screen */
 
-#define BOARD_WIDTH	79
-#define BOARD_HEIGHT	24
+#define BOARD_WIDTH	5
+#define BOARD_HEIGHT 5
 
 /* set everthing to zero */
 
 void initialize_board (int board[][BOARD_HEIGHT]) {
 	int	i, j;
-
-	for (i=0; i<BOARD_WIDTH; i++) for (j=0; j<BOARD_HEIGHT; j++) 
-		board[i][j] = 0;
+	for (i=0; i<BOARD_WIDTH; i++) 
+		for (j=0; j<BOARD_HEIGHT; j++) 
+			board[i][j] = 0;
 }
 
 /* add to a width index, wrapping around like a cylinder */
@@ -109,7 +109,8 @@ void print (int board[][BOARD_HEIGHT]) {
 		/* print each column position... */
 
 		for (i=0; i<BOARD_WIDTH; i++) {
-			printf ("%c", board[i][j] ? 'x' : ' ');
+			//printf ("%c", board[i][j] ? 'x' : ' ');
+			printf ("%c", board[i][j] ? 'x' : 'o');
 		}
 
 		/* followed by a carriage return */
@@ -123,7 +124,7 @@ void print (int board[][BOARD_HEIGHT]) {
 void read_file (int board[][BOARD_HEIGHT], char *name) {
 	FILE	*f;
 	int	i, j;
-	char	s[100];
+	char s[100];
 
 	f = fopen (name, "r");
 	for (j=0; j<BOARD_HEIGHT; j++) {
@@ -144,9 +145,10 @@ void read_file (int board[][BOARD_HEIGHT], char *name) {
 /* main program */
 
 int main (int argc, char *argv[]) {
+	puts(argv[1]);
 	int	board[BOARD_WIDTH][BOARD_HEIGHT], i, j;
 
-	initialize_board (board);
+	initialize_board(board);
 	read_file (board, argv[1]);
 
 	/* play game of life 100 times */
@@ -156,7 +158,7 @@ int main (int argc, char *argv[]) {
 		play (board);
 
 		/* clear the screen using VT100 escape codes */
-
+		sleep(2);
 		puts ("\033[H\033[J");
 	}
 }
