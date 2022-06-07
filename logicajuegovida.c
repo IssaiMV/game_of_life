@@ -3,100 +3,127 @@
 
 /* set everthing to zero */
 
-void initialize_board (int board[][BOARD_HEIGHT]) {
-	int	i, j;
-	for (i=0; i<BOARD_WIDTH; i++) 
-		for (j=0; j<BOARD_HEIGHT; j++) 
+void initialize_board(int board[][BOARD_HEIGHT])
+{
+	int i, j;
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
 			board[i][j] = 0;
 }
 
 /* add to a width index, wrapping around like a cylinder */
 
-int xadd (int i, int a) {
+int xadd(int i, int a){
 	i += a;
-	while (i < 0) i += BOARD_WIDTH;
-	while (i >= BOARD_WIDTH) i -= BOARD_WIDTH;
+	while (i < 0)
+		i += BOARD_WIDTH;
+	while (i >= BOARD_WIDTH)
+		i -= BOARD_WIDTH;
 	return i;
 }
 
 /* add to a height index, wrapping around */
 
-int yadd (int i, int a) {
+int yadd(int i, int a)
+{
 	i += a;
-	while (i < 0) i += BOARD_HEIGHT;
-	while (i >= BOARD_HEIGHT) i -= BOARD_HEIGHT;
+	while (i < 0)
+		i += BOARD_HEIGHT;
+	while (i >= BOARD_HEIGHT)
+		i -= BOARD_HEIGHT;
 	return i;
 }
 
 /* return the number of on cells adjacent to the i,j cell */
 
-int adjacent_to (int board[][BOARD_HEIGHT], int i, int j) {
-	int	k, l, count;
-
+int adjacent_to(int board[][BOARD_HEIGHT], int i, int j){
+	int k, l, count,posx,posy;
 	count = 0;
 
 	/* go around the cell */
+	//printf("\ti=%d,j=%d\n",i,j);
+	for (k = -1; k <= 1; k++){
+		for (l = -1; l <= 1; l++)
+			/* only count if at least one of k,l isn't zero */
+			if (k || l){
+				posx=xadd(i, k);
+				posy=yadd(j, l);
+				if((posx-i>=-1 && posx-i<=1) && (posy-j>=-1 && posy-j<=1)){
+					//printf("%d , %d diferencia %d  %d\n",posx,posy,posx-i,posy-j);
+					if (board[posx][posy])
+					count++;
+				}
+				
+			}
+	}
 
-	for (k=-1; k<=1; k++) for (l=-1; l<=1; l++)
-
-		/* only count if at least one of k,l isn't zero */
-
-		if (k || l)
-			if (board[xadd(i,k)][yadd(j,l)]) count++;
 	return count;
 }
 
-void play (int board[][BOARD_HEIGHT]) {
-/*
-	(copied this from some web page, hence the English spellings...)
+void play(int board[][BOARD_HEIGHT])
+{
+	/*
+		(copied this from some web page, hence the English spellings...)
 
-	1.STASIS : If, for a given cell, the number of on neighbours is 
-	exactly two, the cell maintains its status quo into the next 
-	generation. If the cell is on, it stays on, if it is off, it stays off.
+		1.STASIS : If, for a given cell, the number of on neighbours is
+		exactly two, the cell maintains its status quo into the next
+		generation. If the cell is on, it stays on, if it is off, it stays off.
 
-	2.GROWTH : If the number of on neighbours is exactly three, the cell 
-	will be on in the next generation. This is regardless of the cell's 		current state.
+		2.GROWTH : If the number of on neighbours is exactly three, the cell
+		will be on in the next generation. This is regardless of the cell's 		current state.
 
-	3.DEATH : If the number of on neighbours is 0, 1, 4-8, the cell will 
-	be off in the next generation.
-*/
-	int	i, j, a, newboard[BOARD_WIDTH][BOARD_HEIGHT];
+		3.DEATH : If the number of on neighbours is 0, 1, 4-8, the cell will
+		be off in the next generation.
+	*/
+	int i, j, a, newboard[BOARD_WIDTH][BOARD_HEIGHT];
 
 	/* for each cell, apply the rules of Life */
 
-	for (i=0; i<BOARD_WIDTH; i++) for (j=0; j<BOARD_HEIGHT; j++) {
-		a = adjacent_to (board, i, j);
-		if (a == 2) newboard[i][j] = board[i][j];
-		if (a == 3) newboard[i][j] = 1;
-		if (a < 2) newboard[i][j] = 0;
-		if (a > 3) newboard[i][j] = 0;
+	for (i = 0; i < BOARD_WIDTH; i++){
+		for (j = 0; j < BOARD_HEIGHT; j++){
+			a = adjacent_to(board, i, j); //MANDAMOS LA MATRIX POSX POSY
+			if (a == 2)
+				newboard[i][j] = board[i][j];
+			if (a == 3)
+				newboard[i][j] = 1;
+			if (a < 2)
+				newboard[i][j] = 0;
+			if (a > 3)
+				newboard[i][j] = 0;
+		}
 	}
-
 	/* copy the new board back into the old board */
 
-	for (i=0; i<BOARD_WIDTH; i++) for (j=0; j<BOARD_HEIGHT; j++) {
-		board[i][j] = newboard[i][j];
-	}
+	for (i = 0; i < BOARD_WIDTH; i++)
+		for (j = 0; j < BOARD_HEIGHT; j++)
+		{
+			board[i][j] = newboard[i][j];
+		}
 }
 
-int row_line(){
+int row_line()
+{
 	printf("\n");
-	for(int i=0; i<BOARD_WIDTH; i++){printf(" -----");}
+	for (int i = 0; i < BOARD_WIDTH; i++)
+	{
+		printf(" -----");
+	}
 	printf("\n");
 }
 
 /* print the life board */
 
+void print(int board[][BOARD_HEIGHT])
+{
+	int i, j;
 
-
-void print (int board[][BOARD_HEIGHT]) {
-	int	i, j;
-	
 	row_line();
-	for(j=0; j<BOARD_HEIGHT; j++){
+	for (j = 0; j < BOARD_HEIGHT; j++)
+	{
 		printf(":");
-		for(i=0;i<BOARD_WIDTH;i++){
-			printf("  %c  :",board[i][j] ? '1' : '0');
+		for (i = 0; i < BOARD_WIDTH; i++)
+		{
+			printf("  %c  :", board[i][j] ? '1' : '0');
 		}
 		row_line();
 	}
@@ -105,40 +132,40 @@ void print (int board[][BOARD_HEIGHT]) {
 	/*
 	for (j=0; j<BOARD_HEIGHT; j++) {
 
-		
+
 
 		for (i=0; i<BOARD_WIDTH; i++) {
 			//printf ("%c", board[i][j] ? 'x' : ' ');
 			printf ("%c", board[i][j] ? 'x' : 'o');
 		}
 
-		
+
 
 		printf ("\n");
 	}
 	*/
 }
 
-
 /* read a file into the life board */
 
-void read_file (int board[][BOARD_HEIGHT], char *name) {
-	FILE	*f;
-	int	i, j;
+void read_file(int board[][BOARD_HEIGHT], char *name)
+{
+	FILE *f;
+	int i, j;
 	char s[100];
 
-	f = fopen (name, "r");
-	for (j=0; j<BOARD_HEIGHT; j++) {
+	f = fopen(name, "r");
+	for (j = 0; j < BOARD_HEIGHT; j++){
 
 		/* get a string */
 
-		fgets (s, 100, f);
+		fgets(s, 100, f);
 
 		/* copy the string to the life board */
 
-		for (i=0; i<BOARD_WIDTH; i++) {
+		for (i = 0; i < BOARD_WIDTH; i++){
 			board[i][j] = s[i] == 'x';
 		}
 	}
-	fclose (f);
+	fclose(f);
 }
