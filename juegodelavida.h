@@ -19,4 +19,5 @@ int row_line();
 void print(int board[][BOARD_HEIGHT]);
 /* read a file into the life board */
 void read_file(int board[][BOARD_HEIGHT], char *name);
+#include "logicajuegovida.c"
 #endif

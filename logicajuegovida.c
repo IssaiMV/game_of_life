@@ -1,4 +1,7 @@
+
+#ifndef juegodelavida_h
 #include "juegodelavida.h"
+#endif
 /* dimensions of the screen */
 
 /* set everthing to zero */
