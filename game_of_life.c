@@ -2,18 +2,24 @@
 #include "game_of_life.h"
 #endif
 
+
+int get_random(){
+	return rand() % 2;
+}
 /**
  * Dashboard starts with zero values
  */
-void init(Table *board)
-{
+void init(Table *board,int mode){
 	board->table_of_cell = (Cell**)(malloc(board->rows * sizeof(Cell*)));
 	for (int i = 0; i < board->rows; i++){
 		*(board->table_of_cell + i) = (Cell*)(malloc(board->columns * sizeof(Cell)));
 		for (int j = 0; j < board->columns; j++){
 			//board->table_of_cell[i][j].is_alive = 0;
 			//board->table_of_cell[i][j].conter_neighbor = 0;
-			(*(board->table_of_cell + i) + j)->is_alive = 0;
+			if(mode != 1)
+				(*(board->table_of_cell + i) + j)->is_alive = 0;
+			else
+				(*(board->table_of_cell + i) + j)->is_alive = get_random();
 			(*(board->table_of_cell + i) + j)->conter_neighbor = 0;
 		}
 			
@@ -47,8 +53,7 @@ int yadd(int i, int a,int columns){
 /**
  *  return the number of on cells adjacent to the i,j cell
  */
-void adjacent_to(Table *board, int i, int j)
-{
+void adjacent_to(Table *board, int i, int j){
 	int k, l, posx, posy;
 
 	/* go around the cell */
@@ -77,12 +82,9 @@ void adjacent_to(Table *board, int i, int j)
  * 3.DEATH : If the number of on neighbours is 0, 1, 4-8, the cell will
  * be off in the next generation.
  */
-void play(Game_Of_Life *game)
-{
+void play(Game_Of_Life *game){
 	Table *board = &game->table;
 	Cell newboard[board->rows][board->columns];
-
-	//int newboard[WIDTH][HEIGHT];
 
 	/* for each cell, apply the rules of Life */
 
@@ -112,11 +114,9 @@ void play(Game_Of_Life *game)
 /**
  * Add a line in printf
  */
-int row_line()
-{
+int row_line(int columns){
 	printf("\n");
-	for (int i = 0; i < WIDTH; i++)
-	{
+	for (int i = 0; i < columns; i++){
 		printf(" -----");
 	}
 	printf("\n");
@@ -125,27 +125,25 @@ int row_line()
 /**
  * print the life board
  */
-void print_table(Table *board, char message[],int generation)
-{	
+void print_table(Table *board, char message[],int generation){	
 	if(generation==0)
 		printf("\n%s\n", message);
 	else
 		printf("\n%s %d\n", message,generation);
-	row_line();
+	row_line(board->columns);
 	for (int i = 0; i < board->rows; i++){
 		printf(":");
 		for (int j = 0; j < board->columns; j++){
 			printf("  %c  :", (*(board->table_of_cell + i) + j)->is_alive ? '+' : ' ');
 		}
-		row_line();
+		row_line(board->columns);
 	}
 }
 
 /**
  * read a file into the life board
  */
-void read_file(Table *board)
-{
+void read_file(Table *board){
 	FILE *file;
 	char s[100];
 
@@ -165,8 +163,7 @@ void read_file(Table *board)
 	fclose(file);
 }
 
-int isAllDead(Table *board)
-{
+int isAllDead(Table *board){
 	for (int i = 0; i < board->rows; i++){
 		for (int j = 0; j < board->columns; j++){
 			if ((*(board->table_of_cell + i) + j)->is_alive == 1){

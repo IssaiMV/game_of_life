@@ -1,9 +1,9 @@
 #ifndef game_of_life_h
 #define game_of_life_h
 #include <stdio.h>
-
-#define WIDTH 5
-#define HEIGHT 5
+#include <time.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 typedef struct struct_cell
@@ -25,15 +25,14 @@ typedef struct struct_game
 {
     Table table;
     int generation;
-
 }Game_Of_Life;
 
 
-
+int get_random();
 /**
  * Dashboard starts with zero values
  */
-void init(Table *board);
+void init(Table *board,int mode);
 /**
  *  add to a width index, wrapping around like a cylinder
  */
@@ -53,7 +52,7 @@ void play(Game_Of_Life *game);
 /**
  * Add a line in printf
  */
-int row_line();
+int row_line(int columns);
 /**
  * print the life board
  */
