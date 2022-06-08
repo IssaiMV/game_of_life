@@ -61,5 +61,12 @@ void print_table(Table *board, char message[], int generation);
 void read_file(Table *board);
 
 int is_all_dead(Table *board);
+
+void pause_game();
+
+void menu();
+
+int is_all_moments(Game_Of_Life *game, int time);
+
 #include "game_of_life.c"
 #endif

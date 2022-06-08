@@ -196,3 +196,35 @@ int is_all_dead(Table *board)
 	}
 	return 1;
 }
+
+void pause_game()
+{
+	printf("Presiona la tecla enter para continuar...\n");
+	getchar();
+}
+
+void menu()
+{
+	printf("Recuerda que debes de mandar los siguientes parametros './eject tam_filas tam_columnas modo visualizacion numero_instantes'\n");
+	printf("1.- Tamaño de filas\n");
+	printf("2.- Tamaño de columnas\n");
+	printf("3.- Modo de operación\n");
+	printf("\t1.-Células aleatorias\n");
+	printf("\t2.-Células cargadas por archivo data.txt\n");
+	printf("3.- Visualizacion de los instantes\n");
+	printf("\t1.-Consecutiva\n");
+	printf("\t2.-Manual\n");
+	printf("4.- Numero de instantes\n");
+	printf("\t0.- Infinito\n");
+	printf("\t(num).- Escribe el numero\n");
+}
+
+int is_all_moments(Game_Of_Life *game, int time)
+{
+	if (time == 0 || game->generation <= time)
+	{
+		return 1;
+	}
+
+	return 0;
+}
