@@ -49,7 +49,7 @@ void adjacent_to(Table *board, int i, int j);
 /**
  * Play game of life
  */
-void play(Table *board);
+void play(Game_Of_Life *game);
 /**
  * Add a line in printf
  */
@@ -57,7 +57,7 @@ int row_line();
 /**
  * print the life board
  */
-void print_table(Table *board, char message[]);
+void print_table(Table *board, char message[],int generation);
 /**
  * read a file into the life board
  */

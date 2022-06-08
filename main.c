@@ -13,10 +13,8 @@
 
 int main(int argc, char const *argv[]){
     
-    
     Game_Of_Life game_of_life;
     game_of_life.generation = 0;
-    
     game_of_life.table.columns = WIDTH;
     game_of_life.table.rows = HEIGHT;
 
@@ -26,17 +24,14 @@ int main(int argc, char const *argv[]){
     init(&game_of_life.table);
     read_file(&game_of_life.table);
     puts("\033[H\033[J");
-    print_table(&game_of_life.table, "First Generation");
-    play(&game_of_life.table);
+    print_table(&game_of_life.table, "First Generation",game_of_life.generation);
+    play(&game_of_life);
     sleep(2);
     puts("\033[H\033[J");
-    //print_table(&game_of_life.table, "First Generation");
-    //exit(1);
-
     do{
-        print_table(&game_of_life.table, "Next Generation:");
-        play(&game_of_life.table);
-        game_of_life.generation++;
+        print_table(&game_of_life.table, "Next Generation:",game_of_life.generation);
+        play(&game_of_life);
+        //game_of_life.generation++;
         //num_generation++;
         sleep(1);
         puts("\033[H\033[J");

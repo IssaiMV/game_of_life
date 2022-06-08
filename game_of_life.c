@@ -77,8 +77,9 @@ void adjacent_to(Table *board, int i, int j)
  * 3.DEATH : If the number of on neighbours is 0, 1, 4-8, the cell will
  * be off in the next generation.
  */
-void play(Table *board)
+void play(Game_Of_Life *game)
 {
+	Table *board = &game->table;
 	Cell newboard[board->rows][board->columns];
 
 	//int newboard[WIDTH][HEIGHT];
@@ -105,6 +106,7 @@ void play(Table *board)
 			board->table_of_cell[i][j].is_alive = newboard[i][j].is_alive;
 			board->table_of_cell[i][j].conter_neighbor = 0;
 		}
+	game->generation++;
 }
 
 /**
@@ -123,9 +125,12 @@ int row_line()
 /**
  * print the life board
  */
-void print_table(Table *board, char message[])
-{
-	printf("\n%s\n", message);
+void print_table(Table *board, char message[],int generation)
+{	
+	if(generation==0)
+		printf("\n%s\n", message);
+	else
+		printf("\n%s %d\n", message,generation);
 	row_line();
 	for (int i = 0; i < board->rows; i++){
 		printf(":");
