@@ -5,26 +5,51 @@
 #define WIDTH 5
 #define HEIGHT 5
 
+
+typedef struct struct_cell
+{
+    int is_alive;
+    int conter_neighbor;
+    
+}Cell;
+
+typedef struct struct_table
+{
+    Cell **table_of_cell;
+    int rows;
+    int columns;
+
+}Table;
+
+typedef struct struct_game
+{
+    Table table;
+    int generation;
+
+}Game_Of_Life;
+
+
+
 /**
  * Dashboard starts with zero values
  */
-void init(int board[][HEIGHT]);
+void init(Table *board);
 /**
  *  add to a width index, wrapping around like a cylinder
  */
-int xadd(int i, int a);
+int xadd(int i, int a,int rows);
 /**
  *  add to a height index, wrapping around
  */
-int yadd(int i, int a);
+int yadd(int i, int a,int columns);
 /**
- *  return the number of on cells adjacent to the i,j cell
+ *  count the number of on cells adjacent to the i,j cell
  */
-int adjacent_to(int board[][HEIGHT], int i, int j);
+void adjacent_to(Table *board, int i, int j);
 /**
  * Play game of life
  */
-void play(int board[][HEIGHT]);
+void play(Table *board);
 /**
  * Add a line in printf
  */
@@ -32,12 +57,12 @@ int row_line();
 /**
  * print the life board
  */
-void print(int board[][HEIGHT], char message[]);
+void print_table(Table *board, char message[]);
 /**
  * read a file into the life board
  */
-void read_file(int board[][HEIGHT]);
+void read_file(Table *board);
 
-int isAllDead(int board[][HEIGHT]);
+int isAllDead(Table *board);
 #include "game_of_life.c"
 #endif

@@ -5,62 +5,64 @@
 /**
  * Dashboard starts with zero values
  */
-void init(int board[][HEIGHT])
+void init(Table *board)
 {
-	for (int i = 0; i < HEIGHT; i++)
-		for (int j = 0; j < WIDTH; j++)
-			*(*(board + i) + j) = 0;
+	board->table_of_cell = (Cell**)(malloc(board->rows * sizeof(Cell*)));
+	for (int i = 0; i < board->rows; i++){
+		*(board->table_of_cell + i) = (Cell*)(malloc(board->columns * sizeof(Cell)));
+		for (int j = 0; j < board->columns; j++){
+			//board->table_of_cell[i][j].is_alive = 0;
+			//board->table_of_cell[i][j].conter_neighbor = 0;
+			(*(board->table_of_cell + i) + j)->is_alive = 0;
+			(*(board->table_of_cell + i) + j)->conter_neighbor = 0;
+		}
+			
+	}
+		
 }
 
 /**
  *  add to a width index, wrapping around like a cylinder
  */
-int xadd(int i, int a)
-{
+int xadd(int i, int a,int rows){
 	i += a;
 	while (i < 0)
-		i += WIDTH;
-	while (i >= WIDTH)
-		i -= WIDTH;
+		i += rows;
+	while (i >= rows)
+		i -= rows;
 	return i;
 }
 
 /* add to a height index, wrapping around */
 
-int yadd(int i, int a)
-{
+int yadd(int i, int a,int columns){
 	i += a;
 	while (i < 0)
-		i += HEIGHT;
-	while (i >= HEIGHT)
-		i -= HEIGHT;
+		i += columns;
+	while (i >= columns)
+		i -= columns;
 	return i;
 }
 
 /**
  *  return the number of on cells adjacent to the i,j cell
  */
-int adjacent_to(int board[][HEIGHT], int i, int j)
+void adjacent_to(Table *board, int i, int j)
 {
-	int k, l, count, posx, posy;
-	count = 0;
+	int k, l, posx, posy;
 
 	/* go around the cell */
-	for (k = -1; k <= 1; k++)
-	{
+	for (k = -1; k <= 1; k++){
 		for (l = -1; l <= 1; l++)
 			/* only count if at least one of k,l isn't zero */
-			if (k || l)
-			{
-				posx = xadd(i, k);
-				posy = yadd(j, l);
+			if (k || l){
+				posx = xadd(i, k,board->rows);
+				posy = yadd(j, l,board->columns);
 				if ((posx - i >= -1 && posx - i <= 1) && (posy - j >= -1 && posy - j <= 1))
-					if (board[posx][posy])
-						count++;
+					if (board->table_of_cell[posx][posy].is_alive)
+						board->table_of_cell[i][j].conter_neighbor++;
 			}
 	}
-
-	return count;
 }
 
 /**
@@ -75,33 +77,33 @@ int adjacent_to(int board[][HEIGHT], int i, int j)
  * 3.DEATH : If the number of on neighbours is 0, 1, 4-8, the cell will
  * be off in the next generation.
  */
-void play(int board[][HEIGHT])
+void play(Table *board)
 {
-	int newboard[WIDTH][HEIGHT];
+	Cell newboard[board->rows][board->columns];
+
+	//int newboard[WIDTH][HEIGHT];
 
 	/* for each cell, apply the rules of Life */
 
-	for (int i = 0; i < WIDTH; i++)
-	{
-		for (int j = 0; j < HEIGHT; j++)
-		{
-			int a = adjacent_to(board, i, j); // MANDAMOS LA MATRIX POSX POSY
-			if (a == 2)
-				newboard[i][j] = board[i][j];
-			if (a == 3)
-				newboard[i][j] = 1;
-			if (a < 2)
-				newboard[i][j] = 0;
-			if (a > 3)
-				newboard[i][j] = 0;
+	for (int i = 0; i < board->rows; i++){
+		for (int j = 0; j < board->columns; j++){
+			adjacent_to(board, i, j); // MANDAMOS LA MATRIX POSX POSY
+			if (board->table_of_cell[i][j].conter_neighbor == 2)
+				newboard[i][j].is_alive = board->table_of_cell[i][j].is_alive;
+			if (board->table_of_cell[i][j].conter_neighbor == 3)
+				newboard[i][j].is_alive = 1;
+			if (board->table_of_cell[i][j].conter_neighbor < 2)
+				newboard[i][j].is_alive = 0;
+			if (board->table_of_cell[i][j].conter_neighbor > 3)
+				newboard[i][j].is_alive = 0;
 		}
 	}
 	/* copy the new board back into the old board */
 
-	for (int i = 0; i < WIDTH; i++)
-		for (int j = 0; j < HEIGHT; j++)
-		{
-			board[i][j] = newboard[i][j];
+	for (int i = 0; i < board->rows; i++)
+		for (int j = 0; j < board->columns; j++){
+			board->table_of_cell[i][j].is_alive = newboard[i][j].is_alive;
+			board->table_of_cell[i][j].conter_neighbor = 0;
 		}
 }
 
@@ -121,16 +123,14 @@ int row_line()
 /**
  * print the life board
  */
-void print(int board[][HEIGHT], char message[])
+void print_table(Table *board, char message[])
 {
 	printf("\n%s\n", message);
 	row_line();
-	for (int i = 0; i < HEIGHT; i++)
-	{
+	for (int i = 0; i < board->rows; i++){
 		printf(":");
-		for (int j = 0; j < WIDTH; j++)
-		{
-			printf("  %c  :", *(*(board + i) + j) ? '+' : ' ');
+		for (int j = 0; j < board->columns; j++){
+			printf("  %c  :", (*(board->table_of_cell + i) + j)->is_alive ? '+' : ' ');
 		}
 		row_line();
 	}
@@ -139,38 +139,32 @@ void print(int board[][HEIGHT], char message[])
 /**
  * read a file into the life board
  */
-void read_file(int board[][HEIGHT])
+void read_file(Table *board)
 {
 	FILE *file;
 	char s[100];
 
 	file = fopen("data.txt", "r");
-	if (file == NULL)
-	{
+	if (file == NULL){
 		puts("No se pudo abrir el archivo data.txt");
 	}
 
-	for (int i = 0; i < HEIGHT; i++)
-	{
+	for (int i = 0; i < board->rows; i++){
 		/* get a string */
 		fgets(s, 100, file);
 		/* copy the string to the life board */
-		for (int j = 0; j < WIDTH; j++)
-		{
-			*(*(board + i) + j) = s[j] == 'x';
+		for (int j = 0; j < board->columns; j++){
+			(*(board->table_of_cell + i) + j)->is_alive = s[j] == 'x';
 		}
 	}
 	fclose(file);
 }
 
-int isAllDead(int board[][HEIGHT])
+int isAllDead(Table *board)
 {
-	for (int i = 0; i < HEIGHT; i++)
-	{
-		for (int j = 0; j < WIDTH; j++)
-		{
-			if (*(*(board + i) + j) == 1)
-			{
+	for (int i = 0; i < board->rows; i++){
+		for (int j = 0; j < board->columns; j++){
+			if ((*(board->table_of_cell + i) + j)->is_alive == 1){
 				return 0;
 			}
 		}
