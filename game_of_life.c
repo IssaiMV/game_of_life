@@ -59,7 +59,7 @@ int yadd(int i, int a, int columns)
 void adjacent_to(Table *board, int i, int j)
 {
 	int k, l, posx, posy;
-
+	//printf("\t %d %d\n",i,j);
 	/* go around the cell */
 	for (k = -1; k <= 1; k++)
 	{
@@ -69,9 +69,14 @@ void adjacent_to(Table *board, int i, int j)
 			{
 				posx = xadd(i, k, board->rows);
 				posy = yadd(j, l, board->columns);
-				if ((posx - i >= -1 && posx - i <= 1) && (posy - j >= -1 && posy - j <= 1))
+				
+				
+				if ((posx - i >= -1 && posx - i <= 1) && (posy - j >= -1 && posy - j <= 1)){
+					//printf("%d %d   %d  %d\n",posx,posy,posx-i,posy-j);
 					if (board->table_of_cell[posx][posy].is_alive)
 						board->table_of_cell[i][j].counter_neighbor++;
+				}
+					
 			}
 	}
 }
