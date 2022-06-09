@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
     mode = atoi(argv[3]);
     view = atoi(argv[4]);
     times = atoi(argv[5]);
-    if (rows < 3 || columns < 3){
+    if (rows < 3 || rows > 15|| columns < 3 || columns >15){
         printf("Dimensiones del tablero no permitidas\n");
         return 0;
     }
